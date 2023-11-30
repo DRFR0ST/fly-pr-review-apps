@@ -1,0 +1,33 @@
+name: "PR Review Apps on fly.io [Fork - added dockerfile]"
+description: "Deploy temporary apps from pull requests on Fly.io"
+author: Fly
+branding:
+  icon: "upload-cloud"
+  color: "purple"
+runs:
+  using: "docker"
+  image: "Dockerfile"
+inputs:
+  name:
+    description: Fly app name
+  image:
+    description: Optional pre-existing Docker image to use
+  config:
+    description: Optional path to a custom Fly toml config. Config path should be relative to `path` parameter, if specified.
+  dockerfile:
+    description: Optional path to a custom dockerfile. Dockerfile path should be relative to `path` parameter, if specified.
+  region:
+    description: Region to launch the app in (alternatively, set the env FLY_REGION)
+  org:
+    description: Organization to launch the app in (alternatively, set the env FLY_ORG)
+  path:
+    description: path to a directory containing a fly.toml to clone
+  postgres:
+    description: Optionally attach the app to a pre-existing Postgres cluster on Fly
+  update:
+    description: Whether new commits to the PR should re-deploy the Fly app
+    default: true
+  secrets:
+    description: Secrets to be set on the app. Separate multiple secrets with a space
+  build_arg:
+    description: Build arg passed to docker
