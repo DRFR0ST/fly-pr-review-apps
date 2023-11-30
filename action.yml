@@ -1,4 +1,4 @@
-name: "PR Review Apps on fly.io [Fork - added dockerfile]"
+name: "PR Review Apps on fly.io [Fork]"
 description: "Deploy temporary apps from pull requests on Fly.io"
 author: Fly
 branding:
@@ -31,3 +31,6 @@ inputs:
     description: Secrets to be set on the app. Separate multiple secrets with a space
   build_arg:
     description: Build arg passed to docker
+  internal_port:
+    description: Port to expose on the app
+    default: 8080

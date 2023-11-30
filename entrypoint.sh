@@ -28,6 +28,7 @@ build_arg="$INPUT_BUILD_ARG"
 vm_size="${INPUT_VM_SIZE:-${FLY_VM_SIZE:-shared-cpu-1x}}"
 vm_memory="${INPUT_VM_MEMORY:-${FLY_VM_MEMORY:-256}}"
 wait_timeout="${INPUT_WAIT_TIMEOUT:-120}"
+internal_port="${INPUT_INTERNAL_PORT:-8080}"
 
 
 if ! echo "$app" | grep "$PR_NUMBER"; then
@@ -50,11 +51,11 @@ fi
 if ! flyctl status --app "$app"; then
   # Do not copy config if it was passed
   if [ -n "$INPUT_CONFIG" ]; then
-    flyctl launch --no-deploy --dockerignore-from-gitignore --name "$app" --image "$image" --region "$region" --org "$org" --vm-size "$vm_size" --vm-memory "$vm_memory"
+    flyctl launch --no-deploy --dockerignore-from-gitignore --name "$app" --image "$image" --region "$region" --org "$org" --vm-size "$vm_size" --vm-memory "$vm_memory" --internal-port "$internal_port"
     # Cleanup generated fly.toml
     rm fly.toml
   else
-    flyctl launch --no-deploy --copy-config --dockerignore-from-gitignore --name "$app" --image "$image" --region "$region" --org "$org" --vm-size "$vm_size" --vm-memory "$vm_memory"
+    flyctl launch --no-deploy --copy-config --dockerignore-from-gitignore --name "$app" --image "$image" --region "$region" --org "$org" --vm-size "$vm_size" --vm-memory "$vm_memory" --internal-port "$internal_port"
     # Cleanup generated fly.toml
     rm fly.toml
   fi
@@ -70,6 +71,7 @@ if ! flyctl status --app "$app"; then
 
   # Assign a public IPv4 address to the app.
   flyctl ips allocate-v4 --shared --app "$app"
+  flyctl ips allocate-v6 --app "$app"
 
   # flyctl deploy --config "$config" --dockerfile "$dockerfile" $build_arg --app "$app" --region "$region" --image "$image" --vm-size "$vm_size" --vm-memory "$vm_memory" --strategy immediate --wait-timeout "$wait_timeout"
   flyctl machine run $image --dockerfile "$dockerfile" --app "$app" --region "$region" --vm-size "$vm_size" --vm-memory "$vm_memory" --autostart --restart "on-fail"
