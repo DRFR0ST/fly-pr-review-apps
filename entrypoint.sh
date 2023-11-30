@@ -69,7 +69,7 @@ if ! flyctl status --app "$app"; then
   fi
 
   # Assign a public IPv4 address to the app.
-  flyctl ips assign-v4 --app "$app" --shared
+  flyctl ips allocate-v4 --shared --app "$app"
 
   # flyctl deploy --config "$config" --dockerfile "$dockerfile" $build_arg --app "$app" --region "$region" --image "$image" --vm-size "$vm_size" --vm-memory "$vm_memory" --strategy immediate --wait-timeout "$wait_timeout"
   flyctl machine run $image --dockerfile "$dockerfile" --app "$app" --region "$region" --vm-size "$vm_size" --vm-memory "$vm_memory" --autostart --restart "on-fail"
