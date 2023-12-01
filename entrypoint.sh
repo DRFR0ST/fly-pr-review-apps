@@ -71,7 +71,8 @@ if ! flyctl status --app "$app"; then
 
   # flyctl deploy --config "$config" --dockerfile "$dockerfile" $build_arg --app "$app" --region "$region" --image "$image" --vm-size "$vm_size" --vm-memory "$vm_memory" --strategy immediate --wait-timeout "$wait_timeout"
   # flyctl deploy --dockerfile "$dockerfile" --app "$app" --region "$region" --vm-size "$vm_size" --vm-memory "$vm_memory"
-  flyctl machine run $image --dockerfile "$dockerfile" --config "fly.toml" --app "$app" --region "$region" --vm-size "$vm_size" --vm-memory "$vm_memory" --autostart --restart "on-fail"
+  flyctl deploy --config "fly.toml"
+  # flyctl machine run $image --dockerfile "$dockerfile" --config "fly.toml" --app "$app" --region "$region" --vm-size "$vm_size" --vm-memory "$vm_memory" --autostart --restart "on-fail"
 elif [ "$INPUT_UPDATE" != "false" ]; then
   # flyctl deploy --config "$config" --dockerfile "$dockerfile" $build_arg --app "$app" --region "$region" --image "$image" --vm-size "$vm_size" --vm-memory "$vm_memory" --strategy immediate --wait-timeout "$wait_timeout"
   flyctl machine run $image --dockerfile "$dockerfile" --config "fly.toml" --app "$app" --region "$region" --vm-size "$vm_size" --vm-memory "$vm_memory" --autostart --restart "on-fail"
