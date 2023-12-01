@@ -54,7 +54,7 @@ if ! flyctl status --app "$app"; then
     mv "$INPUT_CONFIG" fly.toml
   fi
 
-  flyctl launch --no-deploy --copy-config --dockerignore-from-gitignore --name "$app" --image "$image" --region "$region" --org "$org" --vm-size "$vm_size" --vm-memory "$vm_memory" --internal-port "$internal_port"
+  flyctl launch --no-deploy --copy-config --dockerignore-from-gitignore --name "$app" --region "$region" --org "$org" --vm-size "$vm_size" --vm-memory "$vm_memory" --internal-port "$internal_port"
 
   if [ -n "$INPUT_SECRETS" ]; then
     echo $INPUT_SECRETS | tr " " "\n" | flyctl secrets import --app "$app"
