@@ -21,9 +21,7 @@ EVENT_TYPE=$(jq -r .action /github/workflow/event.json)
 app="${INPUT_NAME:-pr-$PR_NUMBER-$REPO_OWNER-$REPO_NAME}"
 region="${INPUT_REGION:-${FLY_REGION:-iad}}"
 org="${INPUT_ORG:-${FLY_ORG:-personal}}"
-image="$INPUT_IMAGE"
-config="$INPUT_CONFIG"
-dockerfile="$INPUT_DOCKERFILE"
+config="${$INPUT_CONFIG:-fly.toml}"
 build_arg="$INPUT_BUILD_ARG"
 vm_size="${INPUT_VM_SIZE:-${FLY_VM_SIZE:-shared-cpu-1x}}"
 vm_memory="${INPUT_VM_MEMORY:-${FLY_VM_MEMORY:-256}}"
@@ -67,15 +65,11 @@ if ! flyctl status --app "$app"; then
 
   # Assign a public IPv4 address to the app.
   flyctl ips allocate-v4 --shared --app "$app"
-  # flyctl ips allocate-v6 --app "$app"
+  flyctl ips allocate-v6 --app "$app"
 
-  # flyctl deploy --config "$config" --dockerfile "$dockerfile" $build_arg --app "$app" --region "$region" --image "$image" --vm-size "$vm_size" --vm-memory "$vm_memory" --strategy immediate --wait-timeout "$wait_timeout"
-  # flyctl deploy --dockerfile "$dockerfile" --app "$app" --region "$region" --vm-size "$vm_size" --vm-memory "$vm_memory"
   flyctl deploy --config "fly.toml"
-  # flyctl machine run $image --dockerfile "$dockerfile" --config "fly.toml" --app "$app" --region "$region" --vm-size "$vm_size" --vm-memory "$vm_memory" --autostart --restart "on-fail"
 elif [ "$INPUT_UPDATE" != "false" ]; then
-  # flyctl deploy --config "$config" --dockerfile "$dockerfile" $build_arg --app "$app" --region "$region" --image "$image" --vm-size "$vm_size" --vm-memory "$vm_memory" --strategy immediate --wait-timeout "$wait_timeout"
-  flyctl machine run $image --dockerfile "$dockerfile" --config "fly.toml" --app "$app" --region "$region" --vm-size "$vm_size" --vm-memory "$vm_memory" --autostart --restart "on-fail"
+  flyctl deploy --config "fly.toml"
 fi
 
 # Make some info available to the GitHub workflow.
