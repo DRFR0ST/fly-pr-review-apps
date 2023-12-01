@@ -45,12 +45,13 @@ if [ "$EVENT_TYPE" = "closed" ]; then
   exit 0
 fi
 
+# Do not copy config if it was passed
+if [ -n "$INPUT_CONFIG" ]; then
+  mv "$INPUT_CONFIG" fly.toml
+fi
+
 # Deploy the Fly app, creating it first if needed.
 if ! flyctl status --app "$app"; then
-  # Do not copy config if it was passed
-  if [ -n "$INPUT_CONFIG" ]; then
-    mv "$INPUT_CONFIG" fly.toml
-  fi
 
   flyctl launch --no-deploy --copy-config --dockerignore-from-gitignore --name "$app" --region "$region" --org "$org" --vm-size "$vm_size" --vm-memory "$vm_memory" --internal-port "$internal_port"
 
