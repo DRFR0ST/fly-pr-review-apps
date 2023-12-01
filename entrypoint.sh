@@ -45,7 +45,7 @@ if [ "$EVENT_TYPE" = "closed" ]; then
   exit 0
 fi
 
-# Do not copy config if it was passed
+# Do not copy config if it was passede
 if [ -n "$INPUT_CONFIG" ]; then
   mv "$INPUT_CONFIG" fly.toml
 fi
@@ -70,7 +70,7 @@ if ! flyctl status --app "$app"; then
 
   flyctl deploy --config "fly.toml"
 elif [ "$INPUT_UPDATE" != "false" ]; then
-  flyctl deploy --config "fly.toml"
+  flyctl deploy --config "fly.toml" -a "$app"
 fi
 
 # Make some info available to the GitHub workflow.
