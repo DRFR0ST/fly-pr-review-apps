@@ -51,14 +51,10 @@ fi
 if ! flyctl status --app "$app"; then
   # Do not copy config if it was passed
   if [ -n "$INPUT_CONFIG" ]; then
-    flyctl launch --no-deploy --dockerignore-from-gitignore --name "$app" --image "$image" --region "$region" --org "$org" --vm-size "$vm_size" --vm-memory "$vm_memory" --internal-port "$internal_port"
-    # Cleanup generated fly.toml
-    rm fly.toml
-  else
-    flyctl launch --no-deploy --copy-config --dockerignore-from-gitignore --name "$app" --image "$image" --region "$region" --org "$org" --vm-size "$vm_size" --vm-memory "$vm_memory" --internal-port "$internal_port"
-    # Cleanup generated fly.toml
-    rm fly.toml
+    mv "$INPUT_CONFIG" fly.toml
   fi
+
+  flyctl launch --no-deploy --copy-config --dockerignore-from-gitignore --name "$app" --image "$image" --region "$region" --org "$org" --vm-size "$vm_size" --vm-memory "$vm_memory" --internal-port "$internal_port"
 
   if [ -n "$INPUT_SECRETS" ]; then
     echo $INPUT_SECRETS | tr " " "\n" | flyctl secrets import --app "$app"
@@ -74,8 +70,8 @@ if ! flyctl status --app "$app"; then
   # flyctl ips allocate-v6 --app "$app"
 
   # flyctl deploy --config "$config" --dockerfile "$dockerfile" $build_arg --app "$app" --region "$region" --image "$image" --vm-size "$vm_size" --vm-memory "$vm_memory" --strategy immediate --wait-timeout "$wait_timeout"
-  flyctl deploy --dockerfile "$dockerfile" --app "$app" --region "$region" --vm-size "$vm_size" --vm-memory "$vm_memory"
-  # flyctl machine run $image --dockerfile "$dockerfile" --app "$app" --region "$region" --vm-size "$vm_size" --vm-memory "$vm_memory" --autostart --restart "on-fail"
+  # flyctl deploy --dockerfile "$dockerfile" --app "$app" --region "$region" --vm-size "$vm_size" --vm-memory "$vm_memory"
+  flyctl machine run $image --dockerfile "$dockerfile" --app "$app" --region "$region" --vm-size "$vm_size" --vm-memory "$vm_memory" --autostart --restart "on-fail"
 elif [ "$INPUT_UPDATE" != "false" ]; then
   # flyctl deploy --config "$config" --dockerfile "$dockerfile" $build_arg --app "$app" --region "$region" --image "$image" --vm-size "$vm_size" --vm-memory "$vm_memory" --strategy immediate --wait-timeout "$wait_timeout"
   flyctl machine run $image --dockerfile "$dockerfile" --app "$app" --region "$region" --vm-size "$vm_size" --vm-memory "$vm_memory" --autostart --restart "on-fail"
